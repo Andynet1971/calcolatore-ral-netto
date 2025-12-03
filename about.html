@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Come è stato realizzato il prototipo • Calcolatore RAL → Netto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div class="header-row">
+        <h1>
+          Come è stato realizzato il prototipo
+          <span class="chip">Note tecniche</span>
+        </h1>
+
+        <a href="index.html" class="button-ghost header-link">
+          ← Torna al calcolatore
+        </a>
+      </div>
+
+      <p class="subtitle">
+        Questa pagina descrive le scelte fatte per il calcolatore RAL → netto,
+        le semplificazioni adottate e le fonti utilizzate per i parametri fiscali.
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Obiettivo del prototipo</div>
+      </div>
+      <p>
+        Lo scopo non è replicare in modo esaustivo la complessità del sistema fiscale italiano,
+        ma proporre un <strong>modello semplice, coerente e controllabile</strong> che permetta di:
+      </p>
+      <ul>
+        <li>partire da una <strong>retribuzione annua lorda (RAL)</strong>;</li>
+        <li>simulare le principali trattenute (contributi e imposte);</li>
+        <li>ottenere una stima di <strong>netto annuo e netto mensile</strong>.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Assunzioni principali</div>
+      </div>
+      <p>Per mantenere il modello semplice e spiegabile ho fissato alcuni vincoli:</p>
+      <ul>
+        <li>Dipendente <strong>a tempo indeterminato</strong>.</li>
+        <li>Residenza a <strong>Milano</strong> (Lombardia).</li>
+        <li><strong>Nessuna detrazione</strong> per familiari a carico o altre agevolazioni.</li>
+        <li>Nessun bonus, welfare, premi variabili o stock option.</li>
+        <li>Netto mensile calcolato su <strong>13 mensilità</strong> (netto annuo / 13).</li>
+      </ul>
+      <p>
+        Queste scelte permettono di avere un flusso di calcolo chiaro e discutibile durante
+        un eventuale colloquio, lasciando spazio a possibili estensioni future.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Modello di calcolo</div>
+      </div>
+      <ol>
+        <li>
+          <strong>Input RAL</strong><br />
+          L’utente inserisce la retribuzione annua lorda. Non viene effettuato alcun controllo
+          sul numero di mensilità effettive: si assume che la RAL sia già completa.
+        </li>
+        <li>
+          <strong>Contributi INPS a carico lavoratore</strong><br />
+          Viene applicata un’aliquota fissa del <strong>9,5% del lordo</strong>.
+          Si tratta di un valore medio semplificato, coerente con gli esempi tipici
+          per lavoratori dipendenti del settore privato.
+        </li>
+        <li>
+          <strong>Reddito imponibile fiscale</strong><br />
+          <code>imponibile = RAL - contributi INPS</code>
+        </li>
+        <li>
+          <strong>IRPEF nazionale (modello progressivo)</strong><br />
+          L’imposta viene calcolata per scaglioni con queste aliquote:
+          <ul>
+            <li>23% fino a 28.000 €</li>
+            <li>35% da 28.001 a 50.000 €</li>
+            <li>43% oltre 50.000 €</li>
+          </ul>
+          Il calcolo è progressivo, cioè ogni fetta di imponibile è tassata con la propria aliquota.
+        </li>
+        <li>
+          <strong>Addizionale regionale (Lombardia)</strong><br />
+          È modellata come imposta progressiva sugli stessi scaglioni dell’IRPEF, con aliquote
+          indicative (es. 1,23% – 1,58% – 1,72% – 1,73%). Anche qui viene usato un calcolo
+          per scaglioni, per mantenere coerenza concettuale con l’IRPEF.
+        </li>
+        <li>
+          <strong>Addizionale comunale (Milano)</strong><br />
+          È modellata come <strong>aliquota unica</strong> dello <strong>0,8%</strong> sull’imponibile,
+          ignorando eventuali soglie di esenzione o meccanismi più raffinati.
+        </li>
+        <li>
+          <strong>Netto annuo e netto mensile</strong><br />
+          <code>tasseTotali = contributi INPS + IRPEF + add. regionale + add. comunale</code><br />
+          <code>nettoAnnuo = RAL - tasseTotali</code><br />
+          <code>nettoMensile = nettoAnnuo / 13</code>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Stack tecnologico e struttura</div>
+      </div>
+      <p>Il prototipo è volutamente leggero e privo di dipendenze esterne:</p>
+      <ul>
+        <li><strong>HTML</strong> per la struttura della pagina e dei componenti.</li>
+        <li><strong>CSS</strong> personalizzato per il layout e lo stile (niente framework).</li>
+        <li><strong>JavaScript vanilla</strong> per la logica di calcolo lato client.</li>
+      </ul>
+      <p>La struttura del progetto è:</p>
+      <pre><code>.
+├── index.html    (calcolatore RAL → netto)
+├── about.html    (spiegazione tecnica e fonti)
+├── styles.css    (stile condiviso tra le pagine)
+└── script.js     (logica di calcolo lato client)
+</code></pre>
+      <p>
+        Questo approccio rende il codice facile da leggere, versionare e mostra chiaramente
+        la separazione tra presentazione, logica e contenuto.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Fonti dei dati e ispirazione</div>
+      </div>
+      <p>
+        I parametri utilizzati (aliquote IRPEF, addizionali e contributi) si basano su:
+      </p>
+      <ul>
+        <li>
+          Esempi di <strong>scaglioni IRPEF</strong> e relative aliquote
+          riportati in materiali informativi e siti istituzionali.
+        </li>
+        <li>
+          Documentazione su <strong>addizionale regionale Lombardia</strong> e
+          <strong>addizionale comunale di Milano</strong> (siti regionali/comunali
+          e portali di consulenza fiscale).
+        </li>
+        <li>
+          Indicazioni di massima sui <strong>contributi INPS a carico del lavoratore dipendente</strong>
+          reperite da guide fiscali e buste paga di esempio.
+        </li>
+      </ul>
+      <p>
+        Le aliquote sono state leggermente <strong>semplificate</strong> per ottenere
+        un modello didattico, più che uno strumento di calcolo fiscale ufficiale.
+        L’obiettivo è mostrare il ragionamento, non sostituire un software paghe.
+      </p>
+    </section>
+
+    <footer class="site-footer">
+      Prototipo realizzato da <strong>Andrea Guarnieri</strong>.
+    </footer>
+  </main>
+</body>
+</html>

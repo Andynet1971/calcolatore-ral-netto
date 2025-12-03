@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calcolatore RAL → Netto (Prototipo Jet HR)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS esterno -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div class="header-row">
+        <h1>
+          Calcolatore RAL → Netto
+          <span class="chip">Prototipo semplificato • Milano</span>
+        </h1>
+
+        <!-- NUOVO: link alla pagina di spiegazione -->
+        <a href="about.html" class="button-ghost header-link">
+          Come è stato realizzato
+        </a>
+      </div>
+
+      <p class="subtitle">
+        Inserisci una <strong>retribuzione annua lorda (RAL)</strong> e simula il
+        <strong>netto annuo e mensile</strong>, insieme a contributi e imposte trattenute
+        in busta paga.
+      </p>
+    </header>
+
+    <section class="layout">
+      <!-- PANNELLO INPUT -->
+      <section class="card" aria-label="Input calcolo">
+        <div class="card-header">
+          <div class="card-title">Parametri di calcolo</div>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Caso standard: dipendente tempo indeterminato
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            <span>RAL annua (€)</span>
+            <span>es: 35.000 – 60.000</span>
+          </div>
+
+          <input id="ralInput" type="number" min="0" step="500" placeholder="Es. 35.000" />
+          <div class="hint">Inserisci la retribuzione annua lorda (comprensiva di eventuale 13ª).</div>
+        </div>
+
+        <div class="inline-buttons">
+          <button id="calcButton">
+            <span>Calcola netto</span>
+            <span>➜</span>
+          </button>
+
+          <button class="button-ghost" id="prefillButton" type="button">
+            Riempi con un esempio (RAL 40.000 €)
+          </button>
+        </div>
+
+        <div id="errorBox" class="error" style="display:none;"></div>
+
+        <div class="assumptions">
+          <strong>Assunzioni del prototipo</strong><br />
+          • Dipendente a tempo indeterminato, residente a <strong>Milano</strong>.<br />
+          • Nessuna detrazione per familiari a carico o altre agevolazioni.<br />
+          • Contributi INPS a carico lavoratore fissati al <strong>9,5% del lordo</strong>.<br />
+          • Netto mensile calcolato su <strong>13 mensilità</strong>.<br />
+        </div>
+      </section>
+
+      <!-- PANNELLO OUTPUT -->
+      <section class="card" aria-label="Risultati calcolo">
+        <div class="card-header">
+          <div class="card-title">Risultati</div>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Calcolo live lato client
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Netto annuo stimato</div>
+            <div id="nettoAnnuo" class="summary-value accent">—</div>
+            <div class="summary-tag">Dopo contributi e imposte</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-label">Netto mensile (13ª)</div>
+            <div id="nettoMensile" class="summary-value">—</div>
+            <div class="summary-tag">netto annuo / 13</div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-label">Tasse totali</div>
+            <div id="tasseTotali" class="summary-value danger">—</div>
+            <div class="summary-tag">IRPEF + addizionali + contributi</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- BREAKDOWN TABLE -->
+        <div class="breakdown-header">
+          <div class="breakdown-title">Dettaglio voci di calcolo</div>
+        </div>
+
+        <table aria-describedby="breakdownHelp">
+          <thead>
+            <tr>
+              <th>Voce</th>
+              <th>Descrizione</th>
+              <th>Importo (€)</th>
+            </tr>
+          </thead>
+
+          <tbody id="breakdownBody">
+            <tr><td class="td-label">Lordo annuo</td><td class="td-tag">Retribuzione annua lorda (input)</td><td class="td-value">—</td></tr>
+            <tr><td class="td-label">Contributi INPS</td><td class="td-tag">A carico lavoratore (9,5%)</td><td class="td-value">—</td></tr>
+            <tr><td class="td-label">Imponibile fiscale</td><td class="td-tag">Lordo – contributi INPS</td><td class="td-value">—</td></tr>
+            <tr><td class="td-label">IRPEF nazionale</td><td class="td-tag">Aliquote 23% / 35% / 43%</td><td class="td-value">—</td></tr>
+            <tr><td class="td-label">Addizionale regionale</td><td class="td-tag">Scaglioni Lombardia</td><td class="td-value">—</td></tr>
+            <tr><td class="td-label">Addizionale comunale</td><td class="td-tag">Milano 0,8%</td><td class="td-value">—</td></tr>
+            <tr class="row-total"><td class="td-label">Tasse + contributi totali</td><td class="td-tag">Somma trattenute</td><td class="td-value">—</td></tr>
+            <tr class="row-total"><td class="td-label">Netto annuo stimato</td><td class="td-tag">Lordo – trattenute</td><td class="td-value">—</td></tr>
+          </tbody>
+        </table>
+
+        <p id="breakdownHelp" class="small-note">
+          Calcolo semplificato: non considera detrazioni personali o familiari.
+        </p>
+      </section>
+    </section>
+
+    <!-- NUOVO: footer con credit -->
+    <footer class="site-footer">
+      ✦ Prototipo realizzato da <strong>Andrea Guarnieri</strong> ✦
+    </footer>
+
+  </main>
+
+  <!-- JS esterno -->
+  <script src="script.js"></script>
+</body>
+</html>
